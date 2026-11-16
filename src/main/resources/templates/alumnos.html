@@ -1,70 +1,60 @@
-package com.example.act3_t4.model;
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Lista de alumnos</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background: #f4f6f9; color: #222; }
+        .contenedor { max-width: 900px; margin: 40px auto; padding: 0 16px; }
+        h1 { margin-bottom: 4px; }
+        .sub { color: #666; margin-top: 0; }
+        .boton { display: inline-block; padding: 8px 14px; border-radius: 6px; text-decoration: none; color: #fff; font-size: 14px; }
+        .nuevo { background: #2e7d32; margin: 16px 0; }
+        .editar { background: #1565c0; }
+        .eliminar { background: #c62828; }
+        table { width: 100%; border-collapse: collapse; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+        th, td { padding: 10px 12px; border-bottom: 1px solid #e0e0e0; text-align: left; }
+        th { background: #37474f; color: #fff; }
+        .vacio { text-align: center; color: #777; padding: 24px; }
+    </style>
+</head>
+<body>
+<div class="contenedor">
+    <h1>Alumnos</h1>
+    <p class="sub">CRUD con Spring Boot, Thymeleaf y MySQL</p>
 
-import jakarta.persistence.*;
+    <a class="boton nuevo" th:href="@{/alumnos/nuevo}">+ Registrar alumno</a>
 
-@Entity
-@Table(name = "alumnos")
-public class Alumno {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private String nombre;
-    private String apellido;
-    private String email;
-
-    @ManyToOne
-    @JoinColumn(name = "escuela_id")
-    private Escuela escuela;
-
-    // Constructores
-    public Alumno() {}
-
-    public Alumno(String nombre, String apellido, String email) {
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.email = email;
-    }
-
-    // Getters y Setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getApellido() {
-        return apellido;
-    }
-
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Escuela getEscuela() {
-        return escuela;
-    }
-
-    public void setEscuela(Escuela escuela) {
-        this.escuela = escuela;
-    }
-}
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Email</th>
+            <th>Escuela</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="alumno : ${alumnos}">
+            <td th:text="${alumno.id}">1</td>
+            <td th:text="${alumno.nombre}">Nombre</td>
+            <td th:text="${alumno.apellido}">Apellido</td>
+            <td th:text="${alumno.email}">correo@ejemplo.com</td>
+            <td th:text="${alumno.escuela != null ? alumno.escuela.nombre : '-'}">-</td>
+            <td>
+                <a class="boton editar" th:href="@{/alumnos/editar/{id}(id=${alumno.id})}">Editar</a>
+                <a class="boton eliminar" th:href="@{/alumnos/{id}(id=${alumno.id})}"
+                   onclick="return confirm('¿Eliminar este alumno?');">Eliminar</a>
+            </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(alumnos)}">
+            <td colspan="6" class="vacio">Todavía no hay alumnos registrados.</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
